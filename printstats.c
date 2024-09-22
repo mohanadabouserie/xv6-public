@@ -36,9 +36,15 @@ if(max < atoi(argv[i])){
 }
   }
     
-  int mean = sum/(argc-1);
-  int test = (int) sqrt(mean);
-  printf(1, "%s%d\n%s%d\n%s%d\n", "The mean is: ",test, "The maximum is: ", max,"The minimum is: ", min);   
+  float mean = sum/(argc-1);
+  float difference_sum = 0;
+  for(int i=1;i<argc;i++){
+    difference_sum+= atoi(argv[i]);
+  }
+  float variance = difference_sum / (argc-1); // assuming population variance
+  float standard_deviation = sqrt(variance);
+  // int test = (int) sqrt(mean);
+  printf(1, "%s%d\n%s%d\n%s%d\n%s%d\n", "The mean is: ",(int)mean, "The standard deviation is: ",(int)standard_deviation,"The maximum is: ", max,"The minimum is: ", min);   
   exit();
 }
 
