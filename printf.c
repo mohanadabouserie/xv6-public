@@ -1,7 +1,7 @@
 #include "types.h"
 #include "stat.h"
 #include "user.h"
-
+#define error 1
 static void
 putc(int fd, char c)
 {
@@ -35,6 +35,34 @@ printint(int fd, int xx, int base, int sgn)
     putc(fd, buf[i]);
 }
 
+static void
+printfloat(int fd, double xx, int base, int sgn)
+{
+  
+  double x;
+printint(fd,(int)xx,base,sgn);
+putc(fd,'.');
+  if(sgn && xx < 0){
+    x = -xx;
+  } else {
+    x = xx;
+  }
+
+    
+  int value = 1;
+  printf(1,"\n Before for loop: %d\n",(int)x);
+  for(int j=0;j<error;j++){
+    // printf(1,"Enter");
+x = x * 10;
+value = value * 10;
+  }
+  printf(1,"\n test: %d\n",(int)x);
+  int float_part = (int)x%value;
+  printf(1,"floating part: %d\n",float_part);
+  printint(fd,float_part,base,0);  
+  
+}
+
 // Print to the given fd. Only understands %d, %x, %p, %s.
 void
 printf(int fd, const char *fmt, ...)
@@ -57,6 +85,10 @@ printf(int fd, const char *fmt, ...)
       if(c == 'd'){
         printint(fd, *ap, 10, 1);
         ap++;
+      } else if(c == 'f'){
+        printfloat(fd, (double)*ap, 10, 1);
+        ap++;
+        
       } else if(c == 'x' || c == 'p'){
         printint(fd, *ap, 16, 0);
         ap++;
