@@ -28,7 +28,7 @@ printint(int fd, int xx, int base, int sgn)
   do{
     buf[i++] = digits[x % base];
   }while((x /= base) != 0);
-  if(neg && !sgn) // to handle decimal part in floating points
+  if(neg) 
     buf[i++] = '-';
 
   while(--i >= 0)
@@ -47,7 +47,11 @@ printfloat(int fd, double xx, int base, int sgn)
     putc(fd,'.');
     for(int i=0;i<error;i++)
       exponent*=10;
-    decimal_part = (int)((xx - (double)integer_part)*(double)exponent);  
+    if(sgn && xx < 0){
+    decimal_part = (int)(-1*(xx - (double)integer_part)*(double)exponent);
+  } else {
+    decimal_part = (int)((xx - (double)integer_part)*(double)exponent);
+  }
     printint(fd,decimal_part,base,sgn);
 }
 
