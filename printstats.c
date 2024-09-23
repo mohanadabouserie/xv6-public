@@ -1,7 +1,6 @@
 #include "types.h"
 #include "stat.h"
 #include "user.h"
-#include "sort.h"
 
 #define ERROR 0.01
 void sort(int arr[], int n) {
