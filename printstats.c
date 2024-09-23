@@ -60,18 +60,7 @@ int main(int argc, char *argv[]) {
             max = atoi(argv[i]);
         }
     }
-    for(int i = 0; i < argc - 1; i++)
-    {
-        printf(1, "%d ", arr[i]);
-    }
-    printf(1, "\n");
-
-    for(int i = 0; i < argc - 1; i++)
-    {
-        printf(1, "%d ", *argv[i+1]);
-    }
-    printf(1, "\n");
-
+    
     float mean = (float)sum / (argc - 1);
     float difference_sum = 0;
 
@@ -97,9 +86,6 @@ int main(int argc, char *argv[]) {
     } else {
         printf(1, "%d\n", arr[(argc - 1) / 2]);
     }
-    printf(1,"%f\n",(int)mean);
-    printf(1,"%d\n",(int)mean);
-    printf(1,"%f\n",mean);
-    printf(1,"%f\n",-1.5);
+    
     exit();
 }
