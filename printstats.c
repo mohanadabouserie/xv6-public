@@ -1,9 +1,9 @@
 #include "types.h"
 #include "stat.h"
 #include "user.h"
+#include "sort.h"
 
 #define ERROR 0.01
-
 void sort(int arr[], int n) {
     for (int i = 0; i < n - 1; i++) {
         for (int j = 0; j < n - i - 1; j++) {
@@ -16,7 +16,6 @@ void sort(int arr[], int n) {
         }
     }
 }
-
 float sqrt(int x) {
     if (x == 0) return 0;
     if (x == 1) return 1;
@@ -39,6 +38,11 @@ float sqrt(int x) {
 
 // A program called “printstats” that takes a list of numbers and prints their average, standard deviation, median, min, and max.
 int main(int argc, char *argv[]) {
+    if (argc < 2) {
+        printf(1, "Please provide at least one number\n");
+        exit();
+    }
+
     int i;
     int min = atoi(argv[1]);
     int max = atoi(argv[1]);
@@ -56,6 +60,17 @@ int main(int argc, char *argv[]) {
             max = atoi(argv[i]);
         }
     }
+    for(int i = 0; i < argc - 1; i++)
+    {
+        printf(1, "%d ", arr[i]);
+    }
+    printf(1, "\n");
+
+    for(int i = 0; i < argc - 1; i++)
+    {
+        printf(1, "%d ", *argv[i+1]);
+    }
+    printf(1, "\n");
 
     float mean = (float)sum / (argc - 1);
     float difference_sum = 0;
@@ -68,8 +83,8 @@ int main(int argc, char *argv[]) {
     float standard_deviation = sqrt(variance);
 
     // Print results
-    printf(1, "The mean is: %d\n", (int)mean);
-    printf(1, "The standard deviation is: %d\n", (int)standard_deviation);
+    printf(1, "The mean is: %f\n", mean);
+    printf(1, "The standard deviation is: %f\n", standard_deviation);
     printf(1, "The maximum is: %d\n", max);
     printf(1, "The minimum is: %d\n", min);  
 
@@ -82,6 +97,9 @@ int main(int argc, char *argv[]) {
     } else {
         printf(1, "%d\n", arr[(argc - 1) / 2]);
     }
-    
+    printf(1,"%f\n",(int)mean);
+    printf(1,"%d\n",(int)mean);
+    printf(1,"%f\n",mean);
+    printf(1,"%f\n",-1.5);
     exit();
 }

@@ -1,7 +1,7 @@
 #include "types.h"
 #include "stat.h"
 #include "user.h"
-#define error 1
+#define error 4
 static void
 putc(int fd, char c)
 {
@@ -28,7 +28,7 @@ printint(int fd, int xx, int base, int sgn)
   do{
     buf[i++] = digits[x % base];
   }while((x /= base) != 0);
-  if(neg)
+  if(neg && !sgn) // to handle decimal part in floating points
     buf[i++] = '-';
 
   while(--i >= 0)
@@ -38,29 +38,17 @@ printint(int fd, int xx, int base, int sgn)
 static void
 printfloat(int fd, double xx, int base, int sgn)
 {
-  
-  double x;
-printint(fd,(int)xx,base,sgn);
-putc(fd,'.');
-  if(sgn && xx < 0){
-    x = -xx;
-  } else {
-    x = xx;
-  }
+    int integer_part;
+    int decimal_part;
+    int exponent = 1;
 
-    
-  int value = 1;
-  printf(1,"\n Before for loop: %d\n",(int)x);
-  for(int j=0;j<error;j++){
-    // printf(1,"Enter");
-x = x * 10;
-value = value * 10;
-  }
-  printf(1,"\n test: %d\n",(int)x);
-  int float_part = (int)x%value;
-  printf(1,"floating part: %d\n",float_part);
-  printint(fd,float_part,base,0);  
-  
+    integer_part = (int)xx;
+    printint(fd,integer_part,base,sgn);
+    putc(fd,'.');
+    for(int i=0;i<error;i++)
+      exponent*=10;
+    decimal_part = (int)((xx - (double)integer_part)*(double)exponent);  
+    printint(fd,decimal_part,base,sgn);
 }
 
 // Print to the given fd. Only understands %d, %x, %p, %s.
@@ -86,8 +74,9 @@ printf(int fd, const char *fmt, ...)
         printint(fd, *ap, 10, 1);
         ap++;
       } else if(c == 'f'){
-        printfloat(fd, (double)*ap, 10, 1);
-        ap++;
+        double *fp = (double *)ap;
+        printfloat(fd,*fp, 10, 1);
+        ap+=2;
         
       } else if(c == 'x' || c == 'p'){
         printint(fd, *ap, 16, 0);
