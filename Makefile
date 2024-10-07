@@ -184,6 +184,7 @@ UPROGS=\
 	_printstats\
 	_sort\
 	_save\
+	_testtruncate\
 	
 
 fs.img: mkfs README $(UPROGS)

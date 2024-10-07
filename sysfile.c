@@ -15,7 +15,7 @@
 #include "sleeplock.h"
 #include "file.h"
 #include "fcntl.h"
-
+#include "buf.h"
 // Fetch the nth word-sized system call argument as a file descriptor
 // and return both the descriptor and the corresponding struct file.
 static int
@@ -50,6 +50,55 @@ fdalloc(struct file *f)
     }
   }
   return -1;
+}
+
+int sys_truncate(void) {
+    char *path;
+    uint new_size;
+
+    if (argstr(0, &path) < 0 || argint(1, (int*)&new_size) < 0) {
+        return -1; 
+    }
+
+    struct inode *ip = namei(path);
+    if (ip == 0) {
+        return -1; 
+    }
+
+    // Begin a transaction for safety
+    begin_op();
+    ilock(ip);
+
+    uint current_size = ip->size;
+
+    char *buffer = kalloc();
+    if (!buffer) {
+        iunlock(ip);
+        end_op();
+        return -1;
+    }
+
+    uint size_to_read = (new_size < current_size) ? new_size : current_size;
+    readi(ip, buffer, 0, size_to_read);
+
+    // Truncate the file to new_size
+    // didn't work well, I will use readi, writei, memset instead, would be beneficial if the size is in terms of blocks not in bytes    
+    // itrunc(ip, new_size); 
+    ip->size = new_size;
+    if (new_size > current_size) {
+        memset(buffer + size_to_read, 0, new_size - size_to_read);
+    }
+
+    writei(ip, buffer, 0, new_size);
+
+    kfree(buffer);
+
+    // Update the inode and end the transaction
+    iupdate(ip);
+    iunlock(ip);
+    end_op();
+
+    return 0; 
 }
 
 int
