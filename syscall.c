@@ -104,7 +104,9 @@ extern int sys_wait(void);
 extern int sys_write(void);
 extern int sys_uptime(void);
 extern int sys_truncate(void);
- 
+extern int sys_procinfo(void);
+extern int sys_gettime(void);
+
 static int (*syscalls[])(void) = {
 [SYS_fork]    sys_fork,
 [SYS_exit]    sys_exit,
@@ -128,6 +130,8 @@ static int (*syscalls[])(void) = {
 [SYS_mkdir]   sys_mkdir,
 [SYS_close]   sys_close,
 [SYS_truncate]   sys_truncate,
+[SYS_procinfo]   sys_procinfo,
+[SYS_gettime]    sys_gettime,
 };
 
 void

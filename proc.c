@@ -6,6 +6,7 @@
 #include "x86.h"
 #include "proc.h"
 #include "spinlock.h"
+#include "date.h"
 
 struct {
   struct spinlock lock;
@@ -531,4 +532,49 @@ procdump(void)
     }
     cprintf("\n");
   }
+}
+
+int procinfo(void)
+{
+    struct proc *p = myproc();
+
+    cprintf("Process ID: %d\n", p->pid);
+    cprintf("Process Size: %d bytes\n", p->sz);
+    if(p->state == UNUSED)
+        cprintf("Process State: UNUSED\n");
+    else if(p->state == EMBRYO)
+        cprintf("Process State: EMBRYO\n");
+    else if(p->state == SLEEPING)
+        cprintf("Process State: SLEEPING\n");
+     else if(p->state == RUNNABLE)
+        cprintf("Process State: RUNNABLE\n");
+    else if(p->state == RUNNING)
+        cprintf("Process State: RUNNING\n");
+    else if(p->state == ZOMBIE)
+        cprintf("Process State: ZOMBIE\n");
+
+    cprintf("Channel: %p\n", p->chan);
+    cprintf("Killed: %d\n", p->killed);
+    cprintf("Parent Process ID: %d\n", p->parent ? p->parent->pid : -1);
+    cprintf("Process Name: %s\n", p->name);
+    struct file *f;
+    int fd;
+    cprintf("File descriptors used: \n");
+    for(fd = 0; fd < NOFILE; fd++) {
+        f = p->ofile[fd]; 
+        if(f != 0) {
+          
+            cprintf("File descriptor: %d\n", fd);
+        }
+    }
+    return 23;
+}
+
+int
+gettime()
+{
+    struct rtcdate r;
+    cmostime(&r);
+
+    return r.second + r.minute * 60 + r.hour * 3600 + r.day * 86400;
 }

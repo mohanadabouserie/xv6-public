@@ -21,3 +21,5 @@
 #define SYS_mkdir  20
 #define SYS_close  21
 #define SYS_truncate 22
+#define SYS_procinfo 23
+#define SYS_gettime 24

@@ -6,3 +6,5 @@ struct rtcdate {
   uint month;
   uint year;
 };
+
+void cmostime(struct rtcdate *r);

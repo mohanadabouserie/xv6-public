@@ -1,3 +1,4 @@
+#include "types.h"
 struct stat;
 struct rtcdate;
 
@@ -24,6 +25,8 @@ char* sbrk(int);
 int sleep(int);
 int uptime(void);
 int truncate(char *path, uint new_size);
+int procinfo(void);
+int gettime(void);
 // ulib.c
 int stat(const char*, struct stat*);
 char* strcpy(char*, const char*);

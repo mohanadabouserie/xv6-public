@@ -185,7 +185,8 @@ UPROGS=\
 	_sort\
 	_save\
 	_testtruncate\
-	
+	_test_procinfo\
+	_testtime\
 
 fs.img: mkfs README $(UPROGS)
 	./mkfs fs.img README $(UPROGS)
