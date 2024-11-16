@@ -6,7 +6,11 @@
 #include "memlayout.h"
 #include "mmu.h"
 #include "proc.h"
-
+#include "spinlock.h"
+extern struct {
+  struct spinlock lock;
+  struct proc proc[NPROC];
+} ptable;
 int
 sys_fork(void)
 {
@@ -98,4 +102,50 @@ sys_uptime(void)
   xticks = ticks;
   release(&tickslock);
   return xticks;
+}
+
+int sys_setpriority(void) {
+  int pid, pr;
+  if (argint(0, &pid) < 0 || argint(1, &pr) < 0)
+    return -1;
+
+  struct proc *p;
+  int old_priority = -1;
+  // Find the process with pid
+  acquire(&ptable.lock);
+  for (p = ptable.proc; p < &ptable.proc[NPROC]; p++) {
+    if (p->pid == pid && p->state != UNUSED) {
+      old_priority = p->priority;
+      p->priority = pr;  // Set the new priority
+      break;
+    }
+  }
+  release(&ptable.lock);
+  return old_priority;
+}
+
+int sys_printptable(void) {
+  struct proc *p;
+  char *state;
+
+  acquire(&ptable.lock);
+  for (p = ptable.proc; p < &ptable.proc[NPROC]; p++) {
+    if (p->state == UNUSED)
+      continue;
+
+    // Convert state to a string
+    switch (p->state) {
+      case EMBRYO: state = "EMBRYO"; break;
+      case SLEEPING: state = "SLEEPING"; break;
+      case RUNNABLE: state = "RUNNABLE"; break;
+      case RUNNING: state = "RUNNING"; break;
+      case ZOMBIE: state = "ZOMBIE"; break;
+      default: state = "UNKNOWN"; break;
+    }
+
+    // Print PID, state, and priority (assuming process name is available)
+    cprintf("Name: %s, PID: %d, State: %s, Priority: %d\n", p->name, p->pid, state, p->priority);
+  }
+  release(&ptable.lock);
+  return 0;
 }

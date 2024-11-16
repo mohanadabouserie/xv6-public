@@ -8,6 +8,10 @@
 #include "spinlock.h"
 #include "date.h"
 
+#define DEFAULT 2
+#define MAX 5
+#define MIN 0
+
 struct {
   struct spinlock lock;
   struct proc proc[NPROC];
@@ -89,6 +93,7 @@ allocproc(void)
 found:
   p->state = EMBRYO;
   p->pid = nextpid++;
+  p->priority = DEFAULT;
 
   release(&ptable.lock);
 

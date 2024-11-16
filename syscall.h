@@ -23,3 +23,6 @@
 #define SYS_truncate 22
 #define SYS_procinfo 23
 #define SYS_gettime 24
+#define SYS_setpriority   25
+#define SYS_printptable   26
+

@@ -106,6 +106,8 @@ extern int sys_uptime(void);
 extern int sys_truncate(void);
 extern int sys_procinfo(void);
 extern int sys_gettime(void);
+extern int sys_setpriority(void);
+extern int sys_printptable(void);
 
 static int (*syscalls[])(void) = {
 [SYS_fork]    sys_fork,
@@ -131,7 +133,9 @@ static int (*syscalls[])(void) = {
 [SYS_close]   sys_close,
 [SYS_truncate]   sys_truncate,
 [SYS_procinfo]   sys_procinfo,
-[SYS_gettime]    sys_gettime,
+[SYS_gettime]	 sys_gettime,
+[SYS_setpriority]	 sys_setpriority,
+[SYS_printptable]	 sys_printptable
 };
 
 void
