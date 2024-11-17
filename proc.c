@@ -8,8 +8,8 @@
 #include "spinlock.h"
 #include "date.h"
 
-#define DEFAULT 2
-#define MAX 5
+#define DEFAULT 5
+#define MAX 10
 #define MIN 0
 
 struct {
@@ -354,6 +354,8 @@ scheduler(void)
           highpriority = p2;
       }
       p = highpriority;
+      int new_priority = (p->priority <= 1) ? 1 : ((p->priority)-1);
+      p->priority = new_priority;
       c->proc = p;
       switchuvm(p);
       p->state = RUNNING;

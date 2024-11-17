@@ -25,17 +25,21 @@ int main(int argc, char *argv[]) {
     else if (pid > 0) {
       // parent
       printf(1, "Parent %d creating child %d\n",getpid(), pid);
-      wait();
+      setpriority(pid,5);
+      
+      // printf(1,"Here is at the en of everything: \n");
+      // printptable();
+      break;
       }
     else {
 	    printf(1,"Child %d created\n",getpid());
       printptable();
 	    for(z = 0; z < 400000; z+=1)
 	      x = x + 3.14*89.64; // consume CPU time
-      break;
+      printf(1,"%d\n",x);
+      
     }
   }
-  float num = 1.1;
-  printf(1,"This to test floating point printing %f\n",num);
+  wait();
   exit();
 }

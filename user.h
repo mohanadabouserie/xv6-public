@@ -27,7 +27,7 @@ int uptime(void);
 int truncate(char *path, uint new_size);
 int procinfo(void);
 int gettime(void);
-int setpriority(int pid, float priority);
+int setpriority(int pid, int priority);
 int printptable(void);
 // ulib.c
 int stat(const char*, struct stat*);
