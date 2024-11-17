@@ -184,6 +184,7 @@ UPROGS=\
 	_printstats\
 	_sort\
 	_save\
+	_testscheduler\
 	_testtruncate\
 	_test_procinfo\
 	_testtime\
