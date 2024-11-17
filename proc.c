@@ -8,8 +8,8 @@
 #include "spinlock.h"
 #include "date.h"
 
-#define DEFAULT 5
-#define MAX 10
+#define DEFAULT 500
+#define MAX 1000
 #define MIN 0
 
 struct {
@@ -325,37 +325,34 @@ wait(void)
 //  - swtch to start running that process
 //  - eventually that process transfers control
 //      via swtch back to the scheduler.
-void
-scheduler(void)
-{
-  struct proc *p, *p2;
+void scheduler(void) {
+  struct proc *p;
   struct cpu *c = mycpu();
   c->proc = 0;
-  
-  for(;;){
+
+  for (;;) {
     // Enable interrupts on this processor.
     sti();
-    struct proc *highpriority;
 
-    // Loop over process table looking for process to run.
     acquire(&ptable.lock);
-    for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
-      if(p->state != RUNNABLE)
-        continue;
+    struct proc *highpriority = 0;
 
-      // Switch to chosen process.  It is the process's job
-      // to release ptable.lock and then reacquire it
-      // before jumping back to us.
-      highpriority = p;
-      for(p2 = ptable.proc; p2 < &ptable.proc[NPROC]; p2++){
-        if(p2->state != RUNNABLE)
-          continue;
-        if(highpriority->priority < p2->priority) // larger means more priority
-          highpriority = p2;
+    // Find the highest-priority runnable process
+    for (p = ptable.proc; p < &ptable.proc[NPROC]; p++) {
+      if (p->state == RUNNABLE) {
+        if (highpriority == 0 || p->priority > highpriority->priority) {
+          highpriority = p;
+        }
       }
+    }
+
+    // If a process is found, run it
+    if (highpriority) {
       p = highpriority;
-      int new_priority = (p->priority <= 1) ? 1 : ((p->priority)-1);
-      p->priority = new_priority;
+
+      // Update priority
+      p->priority = (p->priority <= 1) ? 1 : (p->priority - 1);
+
       c->proc = p;
       switchuvm(p);
       p->state = RUNNING;
@@ -364,11 +361,10 @@ scheduler(void)
       switchkvm();
 
       // Process is done running for now.
-      // It should have changed its p->state before coming back.
       c->proc = 0;
     }
-    release(&ptable.lock);
 
+    release(&ptable.lock);
   }
 }
 

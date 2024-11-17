@@ -9,7 +9,9 @@
 #include "spinlock.h"
 
 #include "stat.h"
-
+#define DEFAULT 500
+#define MAX 1000
+#define MIN 0
 extern struct {
   struct spinlock lock;
   struct proc proc[NPROC];
@@ -112,6 +114,8 @@ int sys_setpriority(void) {
   int pr;
   if (argint(0, &pid) < 0 || argint(1, &pr) < 0)
     return -1;
+  if (pr <= 0 || pr > MAX)
+    return -1;
   struct proc *p;
   int old_priority = -1;
   // Find the process with pid
@@ -146,7 +150,6 @@ int sys_printptable(void) {
       default: state = "UNKNOWN"; break;
     }
 
-    // Print PID, state, and priority (assuming process name is available)
     cprintf("Name: %s, PID: %d, State: %s, Priority: %d\n", p->name, p->pid, state, p->priority);
   }
   release(&ptable.lock);
