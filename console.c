@@ -14,6 +14,7 @@
 #include "mmu.h"
 #include "proc.h"
 #include "x86.h"
+#define error 4
 
 static void consputc(int);
 
@@ -49,7 +50,25 @@ printint(int xx, int base, int sign)
     consputc(buf[i]);
 }
 //PAGEBREAK: 50
+static void
+printfloat(double xx, int base, int sgn)
+{
+    int integer_part;
+    int decimal_part;
+    int exponent = 1;
 
+    integer_part = (int)xx;
+    printint(integer_part,base,sgn);
+    consputc('.');
+    for(int i=0;i<error;i++)
+      exponent*=10;
+    if(sgn && xx < 0){
+    decimal_part = (int)(-1*(xx - (double)integer_part)*(double)exponent);
+  } else {
+    decimal_part = (int)((xx - (double)integer_part)*(double)exponent);
+  }
+    printint(decimal_part,base,sgn);
+}
 // Print to the console. only understands %d, %x, %p, %s.
 void
 cprintf(char *fmt, ...)
@@ -77,6 +96,11 @@ cprintf(char *fmt, ...)
     switch(c){
     case 'd':
       printint(*argp++, 10, 1);
+      break;
+    case 'f':
+      double *fp = (double *)argp;
+      printfloat(*fp, 10, 1);
+      argp+=2;
       break;
     case 'x':
     case 'p':

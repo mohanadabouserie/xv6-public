@@ -34,7 +34,7 @@ printint(int fd, int xx, int base, int sgn)
   while(--i >= 0)
     putc(fd, buf[i]);
 }
-
+// bolbol
 static void
 printfloat(int fd, double xx, int base, int sgn)
 {

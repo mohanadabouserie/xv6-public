@@ -35,5 +35,7 @@ int main(int argc, char *argv[]) {
       break;
     }
   }
+  float num = 1.1;
+  printf(1,"This to test floating point printing %f\n",num);
   exit();
 }

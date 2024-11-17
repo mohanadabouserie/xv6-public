@@ -7,6 +7,9 @@
 #include "mmu.h"
 #include "proc.h"
 #include "spinlock.h"
+
+#include "stat.h"
+
 extern struct {
   struct spinlock lock;
   struct proc proc[NPROC];
@@ -105,12 +108,14 @@ sys_uptime(void)
 }
 
 int sys_setpriority(void) {
-  int pid, pr;
-  if (argint(0, &pid) < 0 || argint(1, &pr) < 0)
+  int pid;
+  float pr;
+  int pr_int;
+  if (argint(0, &pid) < 0 || argint(1, &pr_int) < 0)
     return -1;
-
+  pr = (float) pr_int;
   struct proc *p;
-  int old_priority = -1;
+  float old_priority = -1;
   // Find the process with pid
   acquire(&ptable.lock);
   for (p = ptable.proc; p < &ptable.proc[NPROC]; p++) {
@@ -144,7 +149,7 @@ int sys_printptable(void) {
     }
 
     // Print PID, state, and priority (assuming process name is available)
-    cprintf("Name: %s, PID: %d, State: %s, Priority: %d\n", p->name, p->pid, state, p->priority);
+    cprintf("Name: %s, PID: %d, State: %s, Priority: %f\n", p->name, p->pid, state, p->priority);
   }
   release(&ptable.lock);
   return 0;
