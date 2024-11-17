@@ -25,4 +25,4 @@
 #define SYS_gettime 24
 #define SYS_setpriority   25
 #define SYS_printptable   26
-
+#define SYS_getpriority 27

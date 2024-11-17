@@ -3,9 +3,10 @@
 #include "user.h"
 #include "fcntl.h"
 
-#define DEFAULT 500
+
 #define MAX 1000
 #define MIN 0
+#define DEFAULT (MAX+MIN)/2
 void busy_work() {
 
     int i, j;
@@ -14,7 +15,7 @@ void busy_work() {
         for(j = 0; j < 1000000; j++) {
             x = x + j%10;
         }
-        printf(1, "Process %d finished iteration %d with result %d at time %d\n", getpid(), i,x, gettime());
+        printf(1, "Process %d finished iteration %d with result %d and priority %d at time %d\n", getpid(), i,x, getpriority(getpid()),gettime());
     }
 }
 
@@ -37,7 +38,7 @@ int main(int argc, char *argv[]) {
         exit();
     }
     
-    if(factor > (DEFAULT-1) / n){
+    if(factor > (DEFAULT-MIN) / n){
         printf(2, "You should select a relevant factor that is smaller than <DEFAULT-1>/<N_PROC>");
     } // factor can't be negative as xv6 does not accept negative numbers
 
@@ -52,8 +53,8 @@ int main(int argc, char *argv[]) {
         int pid = fork();
         if(pid == 0) {
             priority = priority + factor*i;
-            printf(1,"This is process with pid: %d \n",getpid());
             setpriority(getpid(),priority);
+            printf(1,"This is process with pid: %d and priority %d\n",getpid(), getpriority(getpid()));
             busy_work(); 
             exit(); 
         }

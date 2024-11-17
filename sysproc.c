@@ -131,6 +131,25 @@ int sys_setpriority(void) {
   return old_priority;
 }
 
+int sys_getpriority(void) {
+    int pid;
+    struct proc *p;
+
+    if (argint(0, &pid) < 0)
+        return -1;
+
+    acquire(&ptable.lock);
+    for (p = ptable.proc; p < &ptable.proc[NPROC]; p++) {
+        if (p->pid == pid && p->state != UNUSED) {
+            release(&ptable.lock);
+            return p->priority;  
+        }
+    }
+    release(&ptable.lock);
+
+    return -1;
+}
+
 int sys_printptable(void) {
   struct proc *p;
   char *state;

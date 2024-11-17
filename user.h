@@ -29,6 +29,8 @@ int procinfo(void);
 int gettime(void);
 int setpriority(int pid, int priority);
 int printptable(void);
+int getpriority(int pid);
+
 // ulib.c
 int stat(const char*, struct stat*);
 char* strcpy(char*, const char*);
