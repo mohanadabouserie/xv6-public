@@ -22,7 +22,8 @@ void busy_work(int iterations) {
 int main(int argc, char *argv[]) {
     // Argument validation
     if(argc != 5){
-      printf(2,"Note: testscheduler takes <N-PROC> <sign> <factor> <iterations>, for sign 1->positive, 0->negative");
+      printf(2,"Note: testscheduler takes <N-PROC> <sign> <factor> <iterations>, for sign 1->positive, 0->negative\n");
+      exit();
     }  
     int n = atoi(argv[1]); 
     int sign = atoi(argv[2]);  
@@ -39,24 +40,26 @@ int main(int argc, char *argv[]) {
     }
     
     if(factor > (DEFAULT-MIN) / n){
-        printf(2, "You should select a relevant factor that is smaller than <DEFAULT-1>/<N_PROC> where <DEFAULT> is: %d", DEFAULT);
+        printf(2, "You should select a relevant factor that is smaller than <DEFAULT-1>/<N_PROC> where <DEFAULT> is: %d\n", DEFAULT);
+        exit();
     } // factor can't be negative as xv6 does not accept negative numbers
 
     if(iterations < 1){
         printf(2, "You should select a relevant iteration integer number that is greater than 0");
+        exit();
     } 
 
     int i;
     
     printf(1, "Testing priority decay scheduler in xv6...\n");
     // calculating the factor each next children will have priority based on
-    if(!sign) sign = -1;
+    if(!sign) {sign = -1;}
     
     int priority = DEFAULT;
     for(i = 0; i < n; i++) {
         int pid = fork();
         if(pid == 0) {
-            priority = priority + factor*i;
+            priority = priority + sign * factor * i;
             setpriority(getpid(),priority); // Note that sometimes the print of the new child will be before as it has higher priority
             printf(1,"This is process with pid: %d and priority %d\n",getpid(), getpriority(getpid()));
             busy_work(iterations); 
