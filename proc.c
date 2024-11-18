@@ -346,11 +346,11 @@ void scheduler(void) {
       }
     }
 
-    // If a process is found, run it
+    // Validate that there is a process
     if (highpriority) {
       p = highpriority;
 
-      // Update priority
+      // Update priority decay
       p->priority = (p->priority <= 1) ? 1 : (p->priority - 1);
 
       c->proc = p;
