@@ -17,9 +17,15 @@ void busy_work(int iterations) {
         }
         printf(1, "Process %d finished iteration %d with result %d and priority %d at time %d\n", getpid(), i,x, getpriority(getpid()),gettime());
     }
+    // This is a sample p-table
+    printf(1,"This is the process table after finishing process %d: \n", getpid());
+    printf(1,"------------------------------------------------------------------\n");
+    printptable();
+    printf(1,"------------------------------------------------------------------\n");
 }
 
 int main(int argc, char *argv[]) {
+    printptable();
     // Argument validation
     if(argc != 5){
       printf(2,"Note: testscheduler takes <N-PROC> <sign> <factor> <iterations>, for sign 1->positive, 0->negative\n");
